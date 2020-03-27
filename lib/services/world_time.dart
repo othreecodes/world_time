@@ -16,22 +16,17 @@ class WorldTime {
 
   Future<void> getTime() async {
     try {
-      //API is down. :(
-//    Response response = await get('http://worldtimeapi.org/api/timezone/$url');
-//    print(response.body);
-//    print(response.statusCode);
-//    Map data = jsonDecode(response.body);
-//    print(data);
-//    print(data['title']);
-      await Future.delayed(Duration(seconds: 1));
-      String datetime = "2020-03-25 03:26:18.140964";
-      String offset = "+01:00".substring(1, 3);
+      Response response = await get('http://worldtimeapi.org/api/timezone/$url');
+      Map data = jsonDecode(response.body);
+      String datetime = data['datetime'];
+      String offset = data['utc_offset'];
 
       DateTime now = DateTime.parse(datetime);
-      now = now.add(Duration(hours: int.parse(offset)));
+      now = now.add(Duration(hours: int.parse(offset.substring(1,3))));
       isDayTime = now.hour > 6 && now.hour < 20 ? true : false;
       time = DateFormat.jm().format(now);
     } catch (e) {
+      print(e);
       time = "could not get time";
     }
   }
